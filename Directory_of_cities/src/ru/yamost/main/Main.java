@@ -16,8 +16,13 @@ public class Main {
         //printList(citiesList); // Вывод результата получения данных из файла
         //sortByCityName(citiesList); // Сортировка списка городов по наименованию в алфавитном порядке по убыванию без учета регистра.
         //printList(citiesList); // Вывод результата сортировки
-        sortByCityNameAndDistrict(citiesList);
-        printList(citiesList);
+        //sortByCityNameAndDistrict(citiesList);
+        //printList(citiesList);
+        int[] arrayOfPopulations = getArrayPopulation(citiesList);
+        int[] maxPopulation = getMaxPopulation(arrayOfPopulations);
+        if (maxPopulation != null) {
+            System.out.println("[" + maxPopulation[0] + "] = " + maxPopulation[1]);
+        }
     }
 
     /**
@@ -96,5 +101,43 @@ public class Main {
             else return 0;
         };
         list.sort(comparator);
+    }
+
+    /**
+     * Возвращает преобразованный список городов в массив populations.
+     * @param list Список городов
+     * @return Массив populations из списка городов.
+     */
+    public static int[] getArrayPopulation(List<City> list) {
+        if (list == null) {
+            return null;
+        }
+        int size = list.size();
+        int[] arrayOfPopulation = new int[size];
+        for (int i = 0; i < size; i++) {
+            arrayOfPopulation[i] = list.get(i).getPopulation();
+        }
+        return arrayOfPopulation;
+    }
+
+    /**
+     *  Находит максимальное значения в массиве и возвращает его позицию в массиве и значение
+     * @param populations Массив населений всех городов.
+     * @return Массив в котором первый элемент - индекс максимального значения.
+     * Второй элемент - максимальное значение.
+     */
+    public static int[] getMaxPopulation(int[] populations) {
+        if (populations == null) {
+            return null;
+        }
+        int size = populations.length;
+        int[] maxPopulation = {-1, Integer.MIN_VALUE}; // 0 - index, 1 - value.
+        for (int i = 0; i < size; i++) {
+            if (populations[i] > maxPopulation[1]) {
+                maxPopulation[0] = i; // Запоминаем индекс.
+                maxPopulation[1] = populations[i]; // Запоминаем значение.
+            }
+        }
+        return maxPopulation;
     }
 }
