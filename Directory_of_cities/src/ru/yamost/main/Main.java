@@ -13,16 +13,18 @@ public class Main {
 
     public static void main(String[] args) {
         List<City> citiesList = fillDataClass();
-        //printList(citiesList); // Вывод результата получения данных из файла
+        //printList(citiesList); // Вывод результата получения данных из файла.
         //sortByCityName(citiesList); // Сортировка списка городов по наименованию в алфавитном порядке по убыванию без учета регистра.
-        //printList(citiesList); // Вывод результата сортировки
+        //printList(citiesList); // Вывод результата сортировки.
         //sortByCityNameAndDistrict(citiesList);
         //printList(citiesList);
-        int[] arrayOfPopulations = getArrayPopulation(citiesList);
-        int[] maxPopulation = getMaxPopulation(arrayOfPopulations);
+        /*int[] arrayOfPopulations = getArrayPopulation(citiesList); // Получение массива населений из списка городов.
+        int[] maxPopulation = getMaxPopulation(arrayOfPopulations); // Получение максимального значения населения и его позиции в массиве.
         if (maxPopulation != null) {
-            System.out.println("[" + maxPopulation[0] + "] = " + maxPopulation[1]);
-        }
+            System.out.println("[" + maxPopulation[0] + "] = " + maxPopulation[1]); // Вывод результата.
+        }*/
+        HashMap<String, Integer> hashMap = getNumOfCitiesInRegions(citiesList); // Получаем количество городов в каждом регионе.
+        printNumOfCitiesInRegions(hashMap); // Выводим результат.
     }
 
     /**
@@ -139,5 +141,46 @@ public class Main {
             }
         }
         return maxPopulation;
+    }
+
+    /**
+     *
+     * @param list Список городов России.
+     * @return Возвращает HashMap, где key - регион, а value - количество город в нем.
+     */
+    public static HashMap<String, Integer> getNumOfCitiesInRegions(List<City> list) {
+        if (list == null) {
+            return null;
+        }
+        HashMap<String, Integer> hashMap = new HashMap<>();
+        Set<String> keys = new HashSet<>(); // Множество ключей для более быстрой проверки на вхождение.
+        List<String> keysList = new ArrayList<>(); // Список из ключей к map, чтобы можно было связать с позицией.
+        String region;
+        for (City city : list) {
+            region = city.getRegion();
+            if (!keys.contains(region)) { // Если нет в множестве.
+                keys.add(region); // Добавляем регион в множество.
+                keysList.add(region); // Добавляем регион в список для существования порядка.
+            }
+        }
+        int keyListSize = keys.size();
+        int[] NumOfCitiesInRegions = new int[keyListSize]; // Список значений для map
+        for (City city : list) {
+            // Прибавляем в тот же индекс где находится текстовая запись региона.
+            // Тем самым связываем список из ключей и их значений.
+            NumOfCitiesInRegions[keysList.indexOf(city.getRegion())]++;
+        }
+        for (int i = 0; i < keyListSize; i++) { // Заполняем HashMap.
+            hashMap.put(keysList.get(i), NumOfCitiesInRegions[i]);
+        }
+        return hashMap;
+    }
+
+    /**
+     * Печает все значения из HashMap в определенном формате
+     * @param hashMap HashMap, где key - регион, а value - количество город в нем.
+     */
+    public static void printNumOfCitiesInRegions(HashMap<String, Integer> hashMap) {
+        hashMap.forEach((s, integer) -> System.out.println(s + " - " + integer));
     }
 }
